@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { authService as auth} from 'fbase';
 
 const Auth = () => {
@@ -28,7 +28,19 @@ const Auth = () => {
       setError(e.message);
     }
   }
-
+  
+  const onClick = async (event) => {
+    const { target : { name }} = event;
+    let provider;
+    if (name==='google') {
+      provider = new GoogleAuthProvider();
+      
+    } else if (name==='github') {
+      provider = new GithubAuthProvider();
+    }
+    const result = await signInWithPopup(auth, provider);
+    console.log(`result : ${result}`);
+  }
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -39,8 +51,8 @@ const Auth = () => {
       </form>
       <span onClick={toggleAccount}>{newAccount ? 'Sign In' : 'Sign Up'}</span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name='google' onClick={onClick}>Continue with Google</button>
+        <button name='github' onClick={onClick}>Continue with Github</button>
       </div>
     </div>
   )
