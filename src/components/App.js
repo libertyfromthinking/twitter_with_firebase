@@ -9,9 +9,7 @@ function App() {
   const [init, setInit] = useState(false);
   
   useEffect(()=>{
-    console.log(auth.currentUser)
     onAuthStateChanged(auth, (user)=>{
-      console.log(auth.currentUser)
       if (user) {
         setIsLoggedIn(true);
       }else {
