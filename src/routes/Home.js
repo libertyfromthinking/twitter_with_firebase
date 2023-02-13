@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { dbService } from 'fbase';
 import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import Nweet from 'components/Nweet';
 
 const Home = ({userObj}) => {
   const [nweet, setNweet] = useState('');
@@ -29,7 +30,6 @@ const Home = ({userObj}) => {
   useEffect(()=>{
     const q = query(nweetCollectionRef, orderBy('createdAt', 'desc'));
     onSnapshot(q, (snapshots) => {
-      console.log('onsnapshot!!')
       const nweetArr = snapshots.docs.map((doc)=>{
         return {
         ...doc.data(),
@@ -46,14 +46,10 @@ const Home = ({userObj}) => {
       <input type='text' onChange={onChange} value={nweet} placeholder="What's in your mind?" maxLength={120}/>
       <input type='submit' value='submit'/>
       </form>
-      <div>
-        {nweets.map((nweet) => (
-          <div key={nweet.id}>
-            <h4>{nweet.text}</h4>
-            {new Date(nweet.createdAt).toLocaleString()}
-          </div>
-        ))}
-      </div>
+      {nweets.map(
+        (nweet) => (<Nweet nweetObj={nweet} userObj={userObj} />)
+        )
+      }
     </div>
   );
 }
