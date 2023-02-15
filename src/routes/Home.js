@@ -3,13 +3,13 @@ import { dbService } from 'fbase';
 import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import Nweet from 'components/Nweet';
 
-const Home = ({userObj}) => {
+const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState('');
   const [nweets, setNweets] = useState([]);
   const nweetCollectionRef = collection(dbService, "nwitter");
 
   const onSubmit = async (event) => {
-    event.preventDefault();  
+    event.preventDefault();
     try {
       await addDoc(nweetCollectionRef, {
         text: nweet,
@@ -23,18 +23,19 @@ const Home = ({userObj}) => {
   }
 
   const onChange = (event) => {
-    const { target :{value}} = event;
+    const { target: { value } } = event;
     setNweet(value);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     const q = query(nweetCollectionRef, orderBy('createdAt', 'desc'));
     onSnapshot(q, (snapshots) => {
-      const nweetArr = snapshots.docs.map((doc)=>{
+      const nweetArr = snapshots.docs.map((doc) => {
         return {
-        ...doc.data(),
-        id: doc.id,
-        }}
+          ...doc.data(),
+          id: doc.id,
+        }
+      }
       );
       setNweets(nweetArr);
     });
@@ -43,12 +44,12 @@ const Home = ({userObj}) => {
   return (
     <div>
       <form onSubmit={onSubmit}>
-      <input type='text' onChange={onChange} value={nweet} placeholder="What's in your mind?" maxLength={120}/>
-      <input type='submit' value='submit'/>
+        <input type='text' onChange={onChange} value={nweet} placeholder="What's in your mind?" maxLength={120} />
+        <input type='submit' value='submit' />
       </form>
       {nweets.map(
-        (nweet) => (<Nweet nweetObj={nweet} userObj={userObj} />)
-        )
+        (nweet) => (<div key={nweet.id}><Nweet nweetObj={nweet} userObj={userObj} /></div>)
+      )
       }
     </div>
   );
