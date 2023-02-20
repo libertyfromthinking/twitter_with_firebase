@@ -12,7 +12,7 @@ import Nweet from "components/Nweet";
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState("");
+  const [attachment, setAttachment] = useState();
   const nweetCollectionRef = collection(dbService, "nwitter");
 
   const onSubmit = async (event) => {
@@ -49,9 +49,12 @@ const Home = ({ userObj }) => {
         currentTarget: { result },
       } = finishedEvent;
       console.log(result);
-      // console.log(result)
       setAttachment(result);
     };
+  };
+
+  const onClearAttachment = () => {
+    setAttachment(null);
   };
 
   useEffect(() => {
@@ -79,14 +82,12 @@ const Home = ({ userObj }) => {
         />
         <input type="file" onChange={onFileChange} accept="image/*" />
         <input type="submit" value="Nweet" />
-        <div>
-          <img
-            src={attachment}
-            width="50px"
-            height="50px"
-            alt="uploadedImage"
-          />
-        </div>
+        {attachment && (
+          <div>
+            <img src={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>Clear</button>
+          </div>
+        )}
       </form>
       {nweets.map((nweet) => (
         <Nweet nweetObj={nweet} userObj={userObj} />
