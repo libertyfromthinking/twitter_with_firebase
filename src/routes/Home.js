@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import Nweet from "components/Nweet";
 import { v4 as uuidv4 } from "uuid";
-import { ref, uploadString } from "@firebase/storage";
+import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
@@ -19,19 +19,28 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    let fileUrl = "";
+    if (attachment != "") {
+      try {
+        const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+        const response = await uploadString(fileRef, attachment, "data_url");
+        fileUrl = await getDownloadURL(response.ref);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     try {
-      const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
-      const response = await uploadString(fileRef, attachment, "data_url");
-      console.log(response);
-      // await addDoc(nweetCollectionRef, {
-      //   text: nweet,
-      //   createdAt: Date.now(),
-      //   creatorId: userObj.uid,
-      // });
+      await addDoc(nweetCollectionRef, {
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        fileUrl,
+      });
     } catch (error) {
       console.log("onSubmit error", error);
     }
     setNweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {
@@ -53,7 +62,6 @@ const Home = ({ userObj }) => {
       const {
         currentTarget: { result },
       } = finishedEvent;
-      console.log(result);
       setAttachment(result);
     };
   };
