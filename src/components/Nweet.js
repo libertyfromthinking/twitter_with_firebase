@@ -1,6 +1,7 @@
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
+import { deleteObject, ref } from "firebase/storage";
 
 const Nweet = ({ nweetObj, isOwner }) => {
   const docRef = doc(dbService, "nwitter", nweetObj.id);
@@ -11,13 +12,13 @@ const Nweet = ({ nweetObj, isOwner }) => {
     const isConfirm = window.confirm("삭제하시겠습니까?");
     if (isConfirm) {
       await deleteDoc(docRef);
+      console.log("오브젝트", nweetObj.fileUrl);
+      await deleteObject(ref(storageService, nweetObj.fileUrl));
     }
   };
 
   const toggleisEdit = () => {
-    console.log(`변경전 : ${isEdit}`);
     setisEdit((prev) => !prev);
-    console.log(`변경후 : ${isEdit}`);
   };
 
   const onChange = (event) => {
