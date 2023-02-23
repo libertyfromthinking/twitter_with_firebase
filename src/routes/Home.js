@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { dbService, storageService } from "fbase";
+import { dbService, storageService, nweetCollectionRef } from "fbase";
 import {
   collection,
   addDoc,
@@ -14,8 +14,7 @@ import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
-  const nweetCollectionRef = collection(dbService, "nwitter");
+  const [attachment, setAttachment] = useState("");
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -103,7 +102,11 @@ const Home = ({ userObj }) => {
         )}
       </form>
       {nweets.map((nweet) => (
-        <Nweet nweetObj={nweet} userObj={userObj} />
+        <Nweet
+          nweetObj={nweet}
+          userObj={userObj}
+          isOwner={nweet.creatorId === userObj.uid}
+        />
       ))}
     </div>
   );

@@ -2,7 +2,7 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { dbService } from "fbase";
 
-const Nweet = ({ nweetObj, userObj }) => {
+const Nweet = ({ nweetObj, isOwner }) => {
   const docRef = doc(dbService, "nwitter", nweetObj.id);
   const [isEdit, setisEdit] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
@@ -58,8 +58,12 @@ const Nweet = ({ nweetObj, userObj }) => {
             <img src={nweetObj.fileUrl} width="50px" height="50px" />
           )}
           {new Date(nweetObj.createdAt).toLocaleString()}
-          <button onClick={onDeleteClick}>Delete Nweet</button>
-          <button onClick={toggleisEdit}>Edit Nweet</button>
+          {isOwner && (
+            <>
+              <button onClick={onDeleteClick}>Delete Nweet</button>
+              <button onClick={toggleisEdit}>Edit Nweet</button>
+            </>
+          )}
         </div>
       }
     </div>
