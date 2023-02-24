@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   authService,
   dbService,
@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { async } from "@firebase/util";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj, refreshUser }) => {
   const [newDisplayName, setnewDisplayName] = useState("");
   const [attachment, setAttachment] = useState("");
   const getNweets = async () => {
@@ -43,6 +43,9 @@ const Profile = ({ userObj }) => {
       displayName: newDisplayName,
       photoURL: fileUrl,
     });
+    setAttachment("");
+    setnewDisplayName("");
+    refreshUser();
   };
 
   const onChange = (event) => {
