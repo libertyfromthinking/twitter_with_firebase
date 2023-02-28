@@ -5,7 +5,7 @@ import Auth from "routes/Auth";
 import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
 
-const AppRouter = ({ refreshUser, userObj, isLoggedIn }) => {
+const AppRouter = ({ refreshUser: ()=>{}, userObj, isLoggedIn }) => {
   return (
     <>
       {isLoggedIn && <Navigation userObj={userObj} />}
@@ -25,5 +25,6 @@ const AppRouter = ({ refreshUser, userObj, isLoggedIn }) => {
     </>
   );
 };
+
 
 export default AppRouter;
