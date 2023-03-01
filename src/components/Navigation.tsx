@@ -1,8 +1,9 @@
 import { authService as auth } from "fbase";
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+import { CustomUser } from "components/App";
 
-const Navigation = ({ userObj }) => {
+const Navigation = ({ userObj }: { userObj: CustomUser }): JSX.Element => {
   const navigate = useNavigate();
   const onLogoutClick = () => {
     auth.signOut();

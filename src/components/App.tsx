@@ -14,7 +14,7 @@ function App(): JSX.Element {
           displayName: user.displayName,
           uid: user.uid,
           photoURL: user.photoURL,
-          updateProfile: (args: CustomUser) => {
+          updateProfile: (args: Profile) => {
             updateProfile(user, args);
           },
         });
@@ -30,7 +30,7 @@ function App(): JSX.Element {
         displayName: user.displayName,
         uid: user.uid,
         photoURL: user.photoURL,
-        updateProfile: (args: CustomUser) => {
+        updateProfile: (args: Profile) => {
           updateProfile(user, args);
         },
       });
@@ -53,9 +53,14 @@ function App(): JSX.Element {
 }
 
 type NullableUser = User | null;
-interface CustomUser {
+export interface Profile {
   displayName?: string | null | undefined;
   photoURL?: string | null | undefined;
 }
-
+export interface CustomUser {
+  displayName: string | null;
+  uid: string;
+  photoURL: string | null;
+  updateProfile: (args: Profile) => {};
+}
 export default App;
