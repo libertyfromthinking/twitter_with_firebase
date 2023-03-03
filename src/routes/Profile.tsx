@@ -10,10 +10,18 @@ import { updateProfile } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
 import { async } from "@firebase/util";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { CombinedCodeFixScope } from "typescript";
+import { CustomUser, Fn } from "type";
 
-const Profile = ({ userObj, refreshUser }) => {
-  const [newDisplayName, setnewDisplayName] = useState("");
-  const [attachment, setAttachment] = useState("");
+const Profile = ({
+  userObj,
+  refreshUser,
+}: {
+  userObj: CustomUser;
+  refreshUser: Fn;
+}): JSX.Element => {
+  const [newDisplayName, setnewDisplayName] = useState<string>("");
+  const [attachment, setAttachment] = useState<string>("");
   const getNweets = async () => {
     const q = await query(
       nweetCollectionRef,
@@ -27,10 +35,10 @@ const Profile = ({ userObj, refreshUser }) => {
     });
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     let fileUrl;
-    if (attachment != "") {
+    if (attachment !== "") {
       try {
         const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
         const response = await uploadString(fileRef, attachment, "data_url");
@@ -39,7 +47,7 @@ const Profile = ({ userObj, refreshUser }) => {
         console.log(error);
       }
     }
-    await updateProfile(authService.currentUser, {
+    await updateProfile(authService.currentUser!, {
       displayName: newDisplayName,
       photoURL: fileUrl,
     });
@@ -48,31 +56,34 @@ const Profile = ({ userObj, refreshUser }) => {
     refreshUser();
   };
 
-  const onChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+  const onChange = (event: React.ChangeEvent) => {
+    // const {
+    //   target: { value },
+    // } = event;
+    const { value } = event.target as HTMLTextAreaElement;
     setnewDisplayName(value);
   };
 
-  const onFileChange = (event) => {
-    const {
-      target: { files },
-    } = event;
-    const uploadedImage = files[0];
-    const reader = new FileReader();
+  const onFileChange = (event: React.FormEvent) => {
+    // const {
+    //   target: { files },
+    // } = event;
+    const { files } = event.target as HTMLInputElement;
+    if (files !== null) {
+      const uploadedImage = files[0];
+      const reader = new FileReader();
 
-    reader.readAsDataURL(uploadedImage);
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setAttachment(result);
-    };
+      reader.readAsDataURL(uploadedImage);
+      reader.onloadend = (finishedEvent) => {
+        const target = finishedEvent.currentTarget as FileReader;
+        const { result } = target;
+        if (typeof result === "string") setAttachment(result);
+      };
+    }
   };
 
   const onClearAttachment = () => {
-    setAttachment(null);
+    setAttachment("");
   };
 
   useEffect(() => {

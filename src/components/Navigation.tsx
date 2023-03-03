@@ -1,7 +1,7 @@
 import { authService as auth } from "fbase";
 import React, { useEffect } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
-import { CustomUser } from "components/App";
+import { CustomUser } from "type";
 
 const Navigation = ({ userObj }: { userObj: CustomUser }): JSX.Element => {
   const navigate = useNavigate();

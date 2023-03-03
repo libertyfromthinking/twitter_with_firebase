@@ -2,11 +2,20 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { dbService, storageService } from "fbase";
 import { deleteObject, ref } from "firebase/storage";
+import { CustomUser, NweetObj } from "type";
 
-const Nweet = ({ nweetObj, isOwner }) => {
+const Nweet = ({
+  nweetObj,
+  userObj,
+  isOwner,
+}: {
+  nweetObj: NweetObj;
+  userObj: CustomUser;
+  isOwner: boolean;
+}): JSX.Element => {
   const docRef = doc(dbService, "nwitter", nweetObj.id);
-  const [isEdit, setisEdit] = useState(false);
-  const [newNweet, setNewNweet] = useState(nweetObj.text);
+  const [isEdit, setisEdit] = useState<boolean>(false);
+  const [newNweet, setNewNweet] = useState<string>(nweetObj.text);
 
   const onDeleteClick = async () => {
     const isConfirm = window.confirm("삭제하시겠습니까?");
@@ -21,11 +30,13 @@ const Nweet = ({ nweetObj, isOwner }) => {
     setisEdit((prev) => !prev);
   };
 
-  const onChange = (event) => {
+  const onChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setNewNweet(event.target.value);
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     try {
       await updateDoc(docRef, { text: newNweet });

@@ -4,15 +4,15 @@ import Home from "routes/Home";
 import Auth from "routes/Auth";
 import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
-import { CustomUser } from "components/App";
+import { CustomUser, Fn } from "type";
 
 const AppRouter = ({
   refreshUser,
   userObj,
   isLoggedIn,
 }: {
-  refreshUser: () => void;
-  userObj: CustomUser | {};
+  refreshUser: Fn;
+  userObj: CustomUser;
   isLoggedIn: Boolean;
 }): JSX.Element => {
   return (
